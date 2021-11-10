@@ -1,0 +1,14 @@
+{
+  "name": "todo-list-api",
+  "version": "1.0.0",
+  "description": "TODO list API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "William Rodrigues",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

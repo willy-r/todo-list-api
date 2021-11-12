@@ -1,6 +1,6 @@
 function TarefaController(app) {
   app.get('/tarefas', (_, res) => {
-    res.send(`Rota ativada com GET e recurso "tarefa": valores de "tarefa" devem ser retornados`);
+    res.send('Rota ativada com GET e recurso "tarefa": valores de "tarefa" devem ser retornados');
   });
 
   app.post('/tarefas/criar', (_, res) => {

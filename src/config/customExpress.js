@@ -5,6 +5,7 @@ function configuraExpress() {
   const app = express();
   
   // Middlewares.
+  app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
   // Rotas.

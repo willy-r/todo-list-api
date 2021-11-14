@@ -1,15 +1,16 @@
 const Usuario = require('../models/Usuario');
+const md5 = require('md5');
 
 function UsuarioController(app) {
-  app.get('/usuarios', (_, res) => {
+  app.get('/api/usuarios', (_, res) => {
     res.send(`Rota ativada com GET e recurso "usuarios": valores de "usuarios" devem ser retornados`);
   });
 
-  app.post('/usuarios/criar', async (req, res) => {
+  app.post('/api/usuario', async (req, res) => {
     const novoUsuario = {
       nome: req.body.nome,
       email: req.body.email,
-      senha: req.body.senha,
+      senha: md5(req.body.senha), // Criptografa a senha.
     };
     
     try {

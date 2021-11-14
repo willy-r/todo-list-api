@@ -5,6 +5,24 @@ class Usuario {
     this._db = db;
   }
 
+  listaUsuarios() {
+    return new Promise((resolve, reject) => {
+      const query = 'SELECT * FROM usuario;';
+      
+      this._db.all(query, (err, linhas) => {
+        if (err) {
+          reject({
+            msg: 'Erro ao consultar o banco de dados',
+            motivo: err.message,
+          });
+          return;
+        }
+
+        resolve({ dados: linhas });
+      });
+    });
+  }
+
   addUsuario(novoUsuario) {
     return new Promise((resolve, reject) => {
       const erros = [];
@@ -55,7 +73,7 @@ class Usuario {
         }
 
         resolve({
-          msg: "Usuário criado com sucesso",
+          msg: 'Usuário criado com sucesso',
           dados: novoUsuario,
           id_usuario: this.lastID,
         });

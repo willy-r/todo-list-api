@@ -2,8 +2,13 @@ const Usuario = require('../models/Usuario');
 const md5 = require('md5');
 
 function UsuarioController(app) {
-  app.get('/api/usuarios', (_, res) => {
-    res.send(`Rota ativada com GET e recurso "usuarios": valores de "usuarios" devem ser retornados`);
+  app.get('/api/usuarios', async (_, res) => {
+    try {
+      const usuarios = await Usuario.listaUsuarios();
+      res.status(200).json(usuarios);
+    } catch (err) {
+      res.status(400).json(err);
+    }
   });
 
   app.post('/api/usuario', async (req, res) => {

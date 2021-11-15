@@ -9,8 +9,9 @@ class Tabelas {
       CREATE TABLE IF NOT EXISTS usuario (
         id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
         nome VARCHAR(100),
-        email VARCHAR(100),
-        senha VARCHAR(255)
+        email VARCHAR(100) UNIQUE,
+        senha VARCHAR(255),
+        ativo TINYINT(1)
       );
     `;
 

@@ -18,12 +18,12 @@ class Usuario {
           return;
         }
 
-        resolve(linhas);
+        resolve({ resultados: linhas });
       });
     });
   }
 
-  buscaUsuarioPorID(id) {
+  buscaUsuario(id) {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT * FROM usuario
@@ -46,15 +46,15 @@ class Usuario {
           return;
         }
         
-        resolve(linha);
+        resolve({ resultados: linha });
       });
     });
   }
 
-  addUsuario(novoUsuario) {
+  addUsuario(dadosUsuario) {
     return new Promise((resolve, reject) => {
       // Trata os erros relacionados aos parâmetros da requisição.
-      this._trataErros(novoUsuario, reject);
+      this._trataErros(dadosUsuario, reject);
       
       // Adiciona o usuário no banco de dados.
       const query = `
@@ -63,14 +63,14 @@ class Usuario {
           (?, ?, ?, ?)
         ;
       `;
-      const arrUsuario = [
-        novoUsuario.nome,
-        novoUsuario.email,
-        novoUsuario.senha,
+      const params = [
+        dadosUsuario.nome,
+        dadosUsuario.email,
+        dadosUsuario.senha,
         1, // Por padrão o usuário já vai ser tratato como um usuário ativo.
       ];
 
-      this._db.run(query, arrUsuario, function(err) {
+      this._db.run(query, params, function(err) {
         if (err) {
           reject({
             msg: 'Erro ao adicionar usuário no banco de dados',
@@ -81,29 +81,29 @@ class Usuario {
 
         resolve({
           msg: 'Usuário registrado com sucesso',
-          dados: novoUsuario,
+          dados: dadosUsuario,
           id_usuario: this.lastID,
         });
       });
     });
   }
 
-  _trataErros(novoUsuario, reject) {
+  _trataErros(dadosUsuario, reject) {
     const erros = [];
     
-    if (!novoUsuario.nome) {
+    if (!dadosUsuario.nome) {
       erros.push({
         param: 'nome',
         msg: 'O parâmetro nome é obrigatório',
       });
     }
-    if (!novoUsuario.email) {
+    if (!dadosUsuario.email) {
       erros.push({
         param: 'email',
         msg: 'O parâmetro email é obrigatório',
       });
     }
-    if (!novoUsuario.senha) {
+    if (!dadosUsuario.senha) {
       erros.push({
         param: 'senha',
         msg: 'O parâmetro senha é obrigatório',
@@ -117,6 +117,50 @@ class Usuario {
       });
       return;
     }
+  }
+
+  atualizaUsuario(id, dadosUsuario) {
+    return new Promise((resolve, reject) => {
+      // Como não se sabe quais dados estão sendo atualizados,
+      // é usada a função COALESCE() para pegar o primeiro valor não nulo.
+      const query = `
+        UPDATE usuario
+        SET
+          nome = COALESCE(?, nome),
+          email = COALESCE(?, email),
+          senha = COALESCE(?, senha)
+        WHERE id_usuario = ?;
+      `;
+      const params = [
+        dadosUsuario.email,
+        dadosUsuario.nome,
+        dadosUsuario.senha,
+        id,
+      ];
+      
+      this._db.run(query, params, function(err) {
+        if (err) {
+          reject({
+            msg: 'Erro ao atualizar informações do usuário no banco de dados',
+            motivo: err.message,
+          });
+          return;
+        }
+        if (!this.changes) {
+          reject({
+            msg: 'Usuário não existe no banco de dados',
+            id_usuario: id,
+          });
+          return;
+        }
+        
+        resolve({
+          msg: 'Informações de usuário atualizadas',
+          dados_atualizados: dadosUsuario,
+          id_usuario: id,
+        });
+      });
+    });
   }
 }
 

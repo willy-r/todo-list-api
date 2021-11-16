@@ -27,7 +27,7 @@ class Usuario {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT * FROM usuario
-        WHERE id_usuario = ? AND ativo = TRUE;
+        WHERE id_usuario = ?;
       `;
 
       this._db.get(query, id, (err, linha) => {
@@ -58,16 +58,15 @@ class Usuario {
       
       // Adiciona o usuário no banco de dados.
       const query = `
-        INSERT INTO usuario (nome, email, senha, ativo)
+        INSERT INTO usuario (nome, email, senha)
         VALUES
-          (?, ?, ?, ?)
+          (?, ?, ?)
         ;
       `;
       const params = [
         dadosUsuario.nome,
         dadosUsuario.email,
         dadosUsuario.senha,
-        1, // Por padrão o usuário já vai ser tratato como um usuário ativo.
       ];
 
       this._db.run(query, params, function(err) {
@@ -157,6 +156,37 @@ class Usuario {
         resolve({
           msg: 'Informações de usuário atualizadas',
           dados_atualizados: dadosUsuario,
+          id_usuario: id,
+        });
+      });
+    });
+  }
+
+  deletaUsuario(id) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        DELETE FROM usuario
+        WHERE id_usuario = ?;
+      `;
+
+      this._db.run(query, id, function(err) {
+        if (err) {
+          reject({
+            msg: 'Erro ao deletar usuário no banco de dados',
+            motivo: err.message,
+          });
+          return;
+        }
+        if (!this.changes) {
+          reject({
+            msg: 'Usuário não existe no banco de dados',
+            id_usuario: id,
+          });
+          return;
+        }
+
+        resolve({
+          msg: 'Usuário deletado',
           id_usuario: id,
         });
       });

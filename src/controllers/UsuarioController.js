@@ -5,8 +5,8 @@ const Usuario = require('../models/Usuario');
 function UsuarioController(app) {
   app.get('/api/usuarios', async (_, res) => {
     try {
-      const usuarios = await Usuario.listaUsuarios();
-      res.status(200).json(usuarios);
+      const resultado = await Usuario.listaUsuarios();
+      res.status(200).json(resultado);
     } catch (err) {
       res.status(400).json(err);
     }
@@ -16,8 +16,8 @@ function UsuarioController(app) {
     const id = parseInt(req.params.id);
 
     try {
-      const usuario = await Usuario.buscaUsuario(id);
-      res.status(200).json(usuario);
+      const resultado = await Usuario.buscaUsuario(id);
+      res.status(200).json(resultado);
     } catch (err) {
       res.status(400).json(err);
     }
@@ -31,8 +31,8 @@ function UsuarioController(app) {
     };
     
     try {
-      const infoUsuario = await Usuario.addUsuario(dadosUsuario);
-      res.status(200).json(infoUsuario);
+      const resultado = await Usuario.addUsuario(dadosUsuario);
+      res.status(200).json(resultado);
     } catch (err) {
       res.status(400).json(err);
     }
@@ -47,8 +47,19 @@ function UsuarioController(app) {
     };
 
     try {
-      const infoUsuario = await Usuario.atualizaUsuario(id, dadosUsuario);
-      res.status(200).json(infoUsuario);
+      const resultado = await Usuario.atualizaUsuario(id, dadosUsuario);
+      res.status(200).json(resultado);
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  });
+
+  app.delete('/api/usuario/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    
+    try {
+      const resultado = await Usuario.deletaUsuario(id);
+      res.status(200).json(resultado);
     } catch (err) {
       res.status(400).json(err);
     }

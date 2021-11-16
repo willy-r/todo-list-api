@@ -11,6 +11,17 @@ function UsuarioController(app) {
     }
   });
 
+  app.get('/api/usuario/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    try {
+      const usuario = await Usuario.buscaUsuarioPorID(id);
+      res.status(200).json(usuario);
+    } catch (err) {
+      res.status(400).json(err);
+    }
+  });
+
   app.post('/api/usuario', async (req, res) => {
     const novoUsuario = {
       nome: req.body.nome,

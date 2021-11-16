@@ -18,7 +18,35 @@ class Usuario {
           return;
         }
 
-        resolve({ dados: linhas });
+        resolve(linhas);
+      });
+    });
+  }
+
+  buscaUsuarioPorID(id) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT * FROM usuario
+        WHERE id_usuario = ? AND ativo = TRUE;
+      `;
+
+      this._db.get(query, id, (err, linha) => {
+        if (err) {
+          reject({
+            msg: 'Erro ao consultar o banco de dados',
+            motivo: err.message,
+          });
+          return;
+        }
+        if (!linha) {
+          reject({
+            msg: 'Usuário não existe no banco de dados',
+            id_usuario: id,
+          })
+          return;
+        }
+        
+        resolve(linha);
       });
     });
   }

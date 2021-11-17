@@ -19,6 +19,14 @@ Rotas cadastradas para fazer requisições:
 | PATCH | /api/usuario/1 | Atualiza alguns campos do usuário com o id=1 |
 | DELETE | /api/usuario/1 | Deleta o usuário com o id=1 |
 
+### Rotas para Tarefas
+
+| Método | Rota | Ação |
+| ------ | ---- | ---- |
+| GET | /api/tarefas | Busca todas as tarefas de todos os usuários |
+| GET | /api/tarefa/1 | Busca a tarefa com o id=1 |
+| POST | /api/tarefa | Adiciona uma nova tarefa |
+
 
 ## Rodando o projeto localmente
 

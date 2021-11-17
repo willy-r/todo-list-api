@@ -7,9 +7,17 @@ TODO List API com NodeJS e Express.
 
 Rotas cadastradas para fazer requisições:
 
+> Consulte a [wiki](#todo) para detalhes sobre as rotas.
+
+### Rotas para Usuários
+
 | Método | Rota | Ação |
 | ------ | ---- | ---- |
-| TODO | TODO | TODO |
+| GET | /api/usuarios | Busca todos os usuários |
+| GET | /api/usuario/1 | Busca o usuário com o id=1 |
+| POST | /api/usuario | Adiciona um novo usuário |
+| PATCH | /api/usuario/1 | Atualiza alguns campos do usuário com o id=1 |
+| DELETE | /api/usuario/1 | Deleta o usuário com o id=1 |
 
 
 ## Rodando o projeto localmente

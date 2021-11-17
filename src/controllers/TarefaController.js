@@ -1,11 +1,7 @@
 function TarefaController(app) {
-  app.get('/tarefas', (_, res) => {
-    res.send('Rota ativada com GET e recurso "tarefa": valores de "tarefa" devem ser retornados');
-  });
-
-  app.post('/tarefas/criar', (_, res) => {
-    res.send('Rota POST de "tarefa" ativada: tarefa adicionada ao banco de dados');
-  });
+  app.get('/api/tarefas', (_, res) => {
+    res.send(`Rota ativada com GET e recurso "tarefas": valores de "tarefas" devem ser retornados`);
+  });  
 }
 
 module.exports = TarefaController;

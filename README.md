@@ -21,9 +21,14 @@ git clone https://github.com/willy-r/todo-list-api.git
 cd todo-list-api
 ```
 
-Instale as dependências e inicie o servidor:
+Instale as dependências:
 
 ```bash
 npm install
-npm start
+```
+
+Inicie o servidor de desenvolvimento:
+
+```bash
+npm run dev
 ```

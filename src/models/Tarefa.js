@@ -20,6 +20,24 @@ class Tarefa {
     });
   }
 
+  listaTarefasUsuario(id) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT * FROM tarefa
+        WHERE id_usuario = ?;
+      `;
+
+      this._db.all(query, id, (err, linhas) => {
+        if (err) {
+          reject('Erro ao consultar banco de dados');
+          return;
+        }
+
+        resolve(linhas);
+      });
+    });
+  }
+
   buscaTarefa(id) {
     return new Promise((resolve, reject) => {
       const query = `
@@ -119,6 +137,61 @@ class Tarefa {
     if (erros.length) {
       reject(erros.join('/'));
     }
+  }
+
+  atualizaTarefa(id, dadosTarefa) {
+    return new Promise((resolve, reject) => {
+      // Como não se sabe quais dados estão sendo atualizados,
+      // é usada a função COALESCE() para pegar o primeiro valor não nulo.
+      const query = `
+        UPDATE tarefa
+        SET
+          titulo = COALESCE(?, titulo),
+          descricao = COALESCE(?, descricao),
+          status = COALESCE(?, status)
+        WHERE id_tarefa = ?;
+      `;
+      // @TODO Verificar dados antes de salvar no banco de dados.
+      const params = [
+        dadosTarefa.titulo,
+        dadosTarefa.descricao,
+        dadosTarefa.status,
+        id,
+      ];
+
+      this._db.run(query, params, function(err) {
+        if (err) {
+          reject('Erro ao atualizar informações de tarefa no banco de dados');
+          return;
+        }
+
+        resolve({
+          atualizou: this.changes,
+          idTarefa: id,
+        });
+      });
+    });
+  }
+
+  deletaTarefa(id) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        DELETE FROM tarefa
+        WHERE id_tarefa = ?;
+      `;
+
+      this._db.run(query, id, function(err) {
+        if (err) {
+          reject('Erro ao deletar tarefa no banco de dados');
+          return;
+        }
+
+        resolve({
+          deletou: this.changes,
+          idTarefa: id,
+        });
+      });
+    });
   }
 }
 

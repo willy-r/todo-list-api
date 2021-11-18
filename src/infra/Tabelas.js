@@ -31,7 +31,6 @@ class Tabelas {
         titulo VARCHAR(255),
         descricao TEXT,
         data_criacao DATETIME,
-        data_conclusao DATETIME,
         status TINYINT(2),
         id_usuario INTEGER,
         FOREIGN KEY (id_usuario) REFERENCES usuario (id_usuario)

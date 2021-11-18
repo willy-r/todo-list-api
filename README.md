@@ -51,3 +51,8 @@ Inicie o servidor de desenvolvimento:
 ```bash
 npm run dev
 ```
+
+
+## Autor
+
+- [William Rodrigues](https://github.com/willy-r)

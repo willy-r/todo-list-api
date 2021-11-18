@@ -20,6 +20,24 @@ class Tarefa {
     });
   }
 
+  listaTarefasUsuario(id) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT * FROM tarefa
+        WHERE id_usuario = ?;
+      `;
+
+      this._db.all(query, id, (err, linhas) => {
+        if (err) {
+          reject('Erro ao consultar banco de dados');
+          return;
+        }
+
+        resolve(linhas);
+      });
+    });
+  }
+
   buscaTarefa(id) {
     return new Promise((resolve, reject) => {
       const query = `

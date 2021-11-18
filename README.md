@@ -24,6 +24,7 @@ Rotas cadastradas para fazer requisições:
 | Método | Rota | Ação |
 | ------ | ---- | ---- |
 | GET | /api/tarefas | Busca todas as tarefas de todos os usuários |
+| GET | /api/tarefas/1 | Busca todas as tarefas do usuário com id=1 |
 | GET | /api/tarefa/1 | Busca a tarefa com o id=1 |
 | POST | /api/tarefa | Adiciona uma nova tarefa |
 

@@ -19,6 +19,24 @@ const TarefaController = (app, db) => {
       });
     }
   });
+
+  app.get('/api/tarefas/:idUsuario', async (req, res) => {
+    const id = parseInt(req.params.idUsuario);
+
+    try {
+      const tarefas = await tarefaObj.listaTarefasUsuario(id);
+
+      res.json({
+        erro: false,
+        tarefas: tarefas,
+      });
+    } catch (err) {
+      res.json({
+        erro: true,
+        msg: err,
+      });
+    }
+  });
   
   app.get('/api/tarefa/:id', async (req, res) => {
     const id = parseInt(req.params.id);
@@ -55,6 +73,23 @@ const TarefaController = (app, db) => {
       });
     }
   });
+
+  // app.patch('/api/tarefa/:id', (req, res) => {
+  //   const id = req.params.id;
+  //   const body = { ...req.body };
+
+  //   try {
+  //     const 
+
+  //     res.json({
+  //       erro: false,
+  //     });
+  //   } catch (err) {
+  //     res.json({
+  //       erro: true,
+  //     });
+  //   }
+  // });
 }
 
 module.exports = TarefaController;

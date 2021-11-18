@@ -1,5 +1,4 @@
-const db = require('../infra/dbConexao');
-
+const md5 = require('md5');
 class Usuario {
   constructor(db) {
     this._db = db;
@@ -11,14 +10,11 @@ class Usuario {
       
       this._db.all(query, (err, linhas) => {
         if (err) {
-          reject({
-            msg: 'Erro ao consultar o banco de dados',
-            motivo: err.message,
-          });
+          reject('Erro ao consultar o banco de dados');
           return;
         }
 
-        resolve({ resultados: linhas });
+        resolve(linhas);
       });
     });
   }
@@ -32,31 +28,25 @@ class Usuario {
 
       this._db.get(query, id, (err, linha) => {
         if (err) {
-          reject({
-            msg: 'Erro ao consultar o banco de dados',
-            motivo: err.message,
-          });
+          reject('Erro ao consultar o banco de dados');
           return;
         }
+
         if (!linha) {
-          reject({
-            msg: 'Usuário não existe no banco de dados',
-            id_usuario: id,
-          })
+          reject(`Usuário com ID ${id} não encontrado`);
           return;
         }
         
-        resolve({ resultados: linha });
+        resolve(linha);
       });
     });
   }
 
   addUsuario(dadosUsuario) {
     return new Promise((resolve, reject) => {
-      // Trata os erros relacionados aos parâmetros da requisição.
-      this._trataErros(dadosUsuario, reject);
+      // Verifica os dados passados na requisição.
+      this._verificaDados(dadosUsuario, reject);
       
-      // Adiciona o usuário no banco de dados.
       const query = `
         INSERT INTO usuario (nome, email, senha)
         VALUES
@@ -66,54 +56,50 @@ class Usuario {
       const params = [
         dadosUsuario.nome,
         dadosUsuario.email,
-        dadosUsuario.senha,
+        md5(dadosUsuario.senha),
       ];
 
       this._db.run(query, params, function(err) {
         if (err) {
-          reject({
-            msg: 'Erro ao adicionar usuário no banco de dados',
-            motivo: err.code === 'SQLITE_CONSTRAINT' ? 'Email já cadastrado' : err.message,
-          });
+          reject(err.code === 'SQLITE_CONSTRAINT'
+                 ? 'Email já está cadastrado'
+                 : 'Erro ao adicionar usuário no banco de dados');
           return;
         }
 
         resolve({
-          msg: 'Usuário registrado com sucesso',
-          dados: dadosUsuario,
-          id_usuario: this.lastID,
+          nome: dadosUsuario.nome,
+          email: dadosUsuario.email,
+          idUsuario: this.lastID,
         });
       });
     });
   }
 
-  _trataErros(dadosUsuario, reject) {
+  /**
+   * Trata os dados de usuario antes de inserir no banco de dados:
+   *   1. Os campos nome, email e senha são obrigatórios
+   *   2. O nome não pode ter mais que 100 caracteres
+   *   3. O email não pode ter mais que 100 caracteres
+   *   4. A senha não pode ter mais que 255 caracteres
+   */
+  _verificaDados(dadosUsuario, reject) {
     const erros = [];
     
-    if (!dadosUsuario.nome) {
-      erros.push({
-        param: 'nome',
-        msg: 'O parâmetro nome é obrigatório',
-      });
+    if (!dadosUsuario.nome || dadosUsuario.nome > 100) {
+      erros.push('O nome é obrigatório e precisa ter no máximo 100 caracteres');
     }
-    if (!dadosUsuario.email) {
-      erros.push({
-        param: 'email',
-        msg: 'O parâmetro email é obrigatório',
-      });
+
+    if (!dadosUsuario.email || dadosUsuario.email > 100) {
+      erros.push('O email é obrigatório e precisa ter no máximo 100 caracteres');
     }
-    if (!dadosUsuario.senha) {
-      erros.push({
-        param: 'senha',
-        msg: 'O parâmetro senha é obrigatório',
-      });
+
+    if (!dadosUsuario.senha || !dadosUsuario.senha > 255) {
+      erros.push('A senha é obrigatória e precisa ter no máximo 255 caracteres');
     }
 
     if (erros.length) {
-      reject({
-        msg: 'Erro ao registrar usuário',
-        erros: erros,
-      });
+      reject(erros.join('/'));
       return;
     }
   }
@@ -131,32 +117,21 @@ class Usuario {
         WHERE id_usuario = ?;
       `;
       const params = [
-        dadosUsuario.email,
         dadosUsuario.nome,
-        dadosUsuario.senha,
+        dadosUsuario.email,
+        dadosUsuario.senha ? md5(dadosUsuario.senha) : null,
         id,
       ];
       
       this._db.run(query, params, function(err) {
         if (err) {
-          reject({
-            msg: 'Erro ao atualizar informações do usuário no banco de dados',
-            motivo: err.message,
-          });
-          return;
-        }
-        if (!this.changes) {
-          reject({
-            msg: 'Usuário não existe no banco de dados',
-            id_usuario: id,
-          });
+          reject('Erro ao atualizar informações do usuário no banco de dados');
           return;
         }
         
         resolve({
-          msg: 'Informações de usuário atualizadas',
-          dados_atualizados: dadosUsuario,
-          id_usuario: id,
+          atualizou: this.changes,
+          idUsuario: id,
         });
       });
     });
@@ -171,27 +146,17 @@ class Usuario {
 
       this._db.run(query, id, function(err) {
         if (err) {
-          reject({
-            msg: 'Erro ao deletar usuário no banco de dados',
-            motivo: err.message,
-          });
-          return;
-        }
-        if (!this.changes) {
-          reject({
-            msg: 'Usuário não existe no banco de dados',
-            id_usuario: id,
-          });
+          reject('Erro ao deletar usuário no banco de dados');
           return;
         }
 
         resolve({
-          msg: 'Usuário deletado',
-          id_usuario: id,
+          deletou: this.changes,
+          idUsuario: id,
         });
       });
     });
   }
 }
 
-module.exports = new Usuario(db);
+module.exports = Usuario;

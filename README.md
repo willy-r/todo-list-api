@@ -28,6 +28,7 @@ Rotas cadastradas para fazer requisições:
 | GET | /api/tarefa/1 | Busca a tarefa com o id=1 |
 | POST | /api/tarefa | Adiciona uma nova tarefa |
 | PATCH | /api/tarefa/1 | Atualiza alguns campos da tarefa com o id=1 |
+| DELETE | /api/tarefa/1 | Deleta a tarefa com o id=1 |
 
 
 ## Rodando o projeto localmente

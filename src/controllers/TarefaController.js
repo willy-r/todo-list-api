@@ -88,7 +88,25 @@ const TarefaController = (app, db) => {
     } catch (err) {
       res.json({
         erro: true,
-        msg: err.message,
+        msg: err,
+      });
+    }
+  });
+
+  app.delete('/api/tarefa/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+
+    try {
+      const info = await tarefaObj.deletaTarefa(id);
+
+      res.json({
+        erro: false,
+        info: info,
+      });
+    } catch (err) {
+      res.json({
+        erro: true,
+        msg: err,
       });
     }
   });

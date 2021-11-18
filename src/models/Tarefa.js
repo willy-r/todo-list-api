@@ -172,6 +172,27 @@ class Tarefa {
       });
     });
   }
+
+  deletaTarefa(id) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        DELETE FROM tarefa
+        WHERE id_tarefa = ?;
+      `;
+
+      this._db.run(query, id, function(err) {
+        if (err) {
+          reject('Erro ao deletar tarefa no banco de dados');
+          return;
+        }
+
+        resolve({
+          deletou: this.changes,
+          idTarefa: id,
+        });
+      });
+    });
+  }
 }
 
 module.exports = Tarefa;

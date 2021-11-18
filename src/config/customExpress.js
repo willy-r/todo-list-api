@@ -2,7 +2,9 @@ const express = require('express');
 const consign = require('consign');
 const cors = require('cors');
 
-function configuraExpress() {
+const db = require('../infra/dbConexao');
+
+const customExpress = () => {
   const app = express();
   
   // Middlewares.
@@ -11,9 +13,9 @@ function configuraExpress() {
   app.use(express.urlencoded({ extended: true }));
 
   // Rotas.
-  consign().include('./src/controllers').into(app);
+  consign().include('./src/controllers').into(app, db);
 
   return app;
 }
 
-module.exports = configuraExpress;
+module.exports = customExpress;

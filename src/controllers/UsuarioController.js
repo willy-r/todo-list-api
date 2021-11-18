@@ -1,14 +1,22 @@
-const md5 = require('md5');
-
 const Usuario = require('../models/Usuario');
 
-function UsuarioController(app) {
+const UsuarioController = (app, db) => {
+  // Cria instância de Usuario.
+  const usuarioObj = new Usuario(db);
+
   app.get('/api/usuarios', async (_, res) => {
     try {
-      const resultado = await Usuario.listaUsuarios();
-      res.status(200).json(resultado);
+      const usuarios = await usuarioObj.listaUsuarios();
+      
+      res.json({
+        erro: false,
+        usuarios: usuarios,
+      });
     } catch (err) {
-      res.status(400).json(err);
+      res.json({
+        erro: true,
+        msg: err,
+      });
     }
   });
 
@@ -16,41 +24,54 @@ function UsuarioController(app) {
     const id = parseInt(req.params.id);
 
     try {
-      const resultado = await Usuario.buscaUsuario(id);
-      res.status(200).json(resultado);
+      const usuario = await usuarioObj.buscaUsuario(id);
+
+      res.json({
+        erro: false,
+        usuario: usuario,
+      });
     } catch (err) {
-      res.status(400).json(err);
+      res.json({
+        erro: true,
+        msg: err,
+      });
     }
   });
 
   app.post('/api/usuario', async (req, res) => {
-    const dadosUsuario = {
-      nome: req.body.nome,
-      email: req.body.email,
-      senha: req.body.senha ? md5(req.body.senha) : null, // Criptografa a senha.
-    };
+    const body = { ...req.body };
     
     try {
-      const resultado = await Usuario.addUsuario(dadosUsuario);
-      res.status(200).json(resultado);
+      const usuarioCriado = await usuarioObj.addUsuario(body);
+      
+      res.json({
+        erro: false,
+        usuarioCriado: usuarioCriado,
+      });
     } catch (err) {
-      res.status(400).json(err);
+      res.json({
+        erro: true,
+        msg: err,
+      });
     }
   });
 
   app.patch('/api/usuario/:id', async (req, res) => {
     const id = parseInt(req.params.id);
-    const dadosUsuario = {
-      email: req.body.email ? req.body.email : null,
-      nome: req.body.nome ? req.body.nome : null,
-      senha: req.body.senha ? md5(req.body.senha) : null, // Criptografa a nova senha.
-    };
+    const body = { ...req.body };
 
     try {
-      const resultado = await Usuario.atualizaUsuario(id, dadosUsuario);
-      res.status(200).json(resultado);
+      const infoUsuarioAtualizado = await usuarioObj.atualizaUsuario(id, body);
+      
+      res.json({
+        erro: false,
+        info: infoUsuarioAtualizado,
+      });
     } catch (err) {
-      res.status(400).json(err);
+      res.json({
+        erro: true,
+        msg: err.message,
+      });
     }
   });
 
@@ -58,10 +79,17 @@ function UsuarioController(app) {
     const id = parseInt(req.params.id);
     
     try {
-      const resultado = await Usuario.deletaUsuario(id);
-      res.status(200).json(resultado);
+      const infoUsuarioDeletado = await usuarioObj.deletaUsuario(id);
+      
+      res.json({
+        erro: false,
+        info: infoUsuarioDeletado,
+      });
     } catch (err) {
-      res.status(400).json(err);
+      res.json({
+        erro: true,
+        msg: err,
+      });
     }
   });
 }

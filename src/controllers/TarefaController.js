@@ -74,22 +74,24 @@ const TarefaController = (app, db) => {
     }
   });
 
-  // app.patch('/api/tarefa/:id', (req, res) => {
-  //   const id = req.params.id;
-  //   const body = { ...req.body };
+  app.patch('/api/tarefa/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const body = { ...req.body };
 
-  //   try {
-  //     const 
+    try {
+      const info = await tarefaObj.atualizaTarefa(id, body);
 
-  //     res.json({
-  //       erro: false,
-  //     });
-  //   } catch (err) {
-  //     res.json({
-  //       erro: true,
-  //     });
-  //   }
-  // });
+      res.json({
+        erro: false,
+        info: info,
+      });
+    } catch (err) {
+      res.json({
+        erro: true,
+        msg: err.message,
+      });
+    }
+  });
 }
 
 module.exports = TarefaController;

@@ -138,6 +138,40 @@ class Tarefa {
       reject(erros.join('/'));
     }
   }
+
+  atualizaTarefa(id, dadosTarefa) {
+    return new Promise((resolve, reject) => {
+      // Como não se sabe quais dados estão sendo atualizados,
+      // é usada a função COALESCE() para pegar o primeiro valor não nulo.
+      const query = `
+        UPDATE tarefa
+        SET
+          titulo = COALESCE(?, titulo),
+          descricao = COALESCE(?, descricao),
+          status = COALESCE(?, status)
+        WHERE id_tarefa = ?;
+      `;
+      // @TODO Verificar dados antes de salvar no banco de dados.
+      const params = [
+        dadosTarefa.titulo,
+        dadosTarefa.descricao,
+        dadosTarefa.status,
+        id,
+      ];
+
+      this._db.run(query, params, function(err) {
+        if (err) {
+          reject('Erro ao atualizar informações de tarefa no banco de dados');
+          return;
+        }
+
+        resolve({
+          atualizou: this.changes,
+          idTarefa: id,
+        });
+      });
+    });
+  }
 }
 
 module.exports = Tarefa;

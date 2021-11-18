@@ -29,7 +29,7 @@ class Tabelas {
       CREATE TABLE IF NOT EXISTS tarefa (
         id_tarefa INTEGER PRIMARY KEY AUTOINCREMENT,
         titulo VARCHAR(255),
-        conteudo TEXT,
+        descricao TEXT,
         data_criacao DATETIME,
         data_conclusao DATETIME,
         status TINYINT(2),

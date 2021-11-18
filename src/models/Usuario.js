@@ -45,7 +45,7 @@ class Usuario {
   addUsuario(dadosUsuario) {
     return new Promise((resolve, reject) => {
       // Verifica os dados passados na requisição.
-      this._verificaDados(dadosUsuario, reject);
+      this._verificaDadosParaAddUsuario(dadosUsuario, reject);
       
       const query = `
         INSERT INTO usuario (nome, email, senha)
@@ -77,13 +77,13 @@ class Usuario {
   }
 
   /**
-   * Trata os dados de usuario antes de inserir no banco de dados:
+   * Verifica os dados de usuario antes de inserir no banco de dados:
    *   1. Os campos nome, email e senha são obrigatórios
    *   2. O nome não pode ter mais que 100 caracteres
    *   3. O email não pode ter mais que 100 caracteres
    *   4. A senha não pode ter mais que 255 caracteres
    */
-  _verificaDados(dadosUsuario, reject) {
+  _verificaDadosParaAddUsuario(dadosUsuario, reject) {
     const erros = [];
     
     if (!dadosUsuario.nome || dadosUsuario.nome > 100) {
@@ -106,6 +106,9 @@ class Usuario {
 
   atualizaUsuario(id, dadosUsuario) {
     return new Promise((resolve, reject) => {
+      // Verifica os dados passados na requisição.
+      this._verificaDadosParaAtualizarUsuario(dadosUsuario, reject);
+
       // Como não se sabe quais dados estão sendo atualizados,
       // é usada a função COALESCE() para pegar o primeiro valor não nulo.
       const query = `
@@ -135,6 +138,34 @@ class Usuario {
         });
       });
     });
+  }
+
+  /**
+   * Verifica os dados antes de atualizar usuario:
+   *   1. Nenhum dos dados é obrigatório, pode ser que não venha algum campo
+   *   2. O nome precisa ter no máximo 100 caracteres
+   *   3. O email precisa ter no máximo 100 caracteres
+   *   4. A senha precisa ter no máximo 255 caracteres
+   */
+  _verificaDadosParaAtualizarUsuario(dadosUsuario, reject) {
+    const erros = [];
+
+    if (dadosUsuario.nome && dadosUsuario.nome.length > 100) {
+      erros.push('O nome precisa ter no máximo 100 caracteres');
+    }
+
+    if (dadosUsuario.email && dadosUsuario.email.length > 100) {
+      erros.push('O email precisa ter no máximo 100 caracteres');
+    }
+
+    if (dadosUsuario.senha && dadosUsuario.senha.length > 255) {
+      erros.push('O senha precisa ter no máximo 255 caracteres');
+    }
+
+    if (erros.length) {
+      reject(erros.join('/'));
+      return;
+    }
   }
 
   deletaUsuario(id) {

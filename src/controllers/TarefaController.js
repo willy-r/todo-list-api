@@ -79,11 +79,11 @@ const TarefaController = (app, db) => {
     const body = { ...req.body };
 
     try {
-      const info = await tarefaObj.atualizaTarefa(id, body);
+      const infoTarefaAtualizada = await tarefaObj.atualizaTarefa(id, body);
 
       res.json({
         erro: false,
-        info: info,
+        info: infoTarefaAtualizada,
       });
     } catch (err) {
       res.json({
@@ -97,11 +97,11 @@ const TarefaController = (app, db) => {
     const id = parseInt(req.params.id);
 
     try {
-      const info = await tarefaObj.deletaTarefa(id);
+      const infoTarefaDeletada = await tarefaObj.deletaTarefa(id);
 
       res.json({
         erro: false,
-        info: info,
+        info: infoTarefaDeletada,
       });
     } catch (err) {
       res.json({

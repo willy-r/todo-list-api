@@ -70,7 +70,7 @@ const UsuarioController = (app, db) => {
     } catch (err) {
       res.json({
         erro: true,
-        msg: err.message,
+        msg: err,
       });
     }
   });

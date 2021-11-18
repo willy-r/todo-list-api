@@ -64,7 +64,7 @@ class Tarefa {
   addTarefa(dadosTarefa) {
     return new Promise((resolve, reject) => {
       // Verifica os dados passados na requisição.
-      this._verificaDados(dadosTarefa, reject);
+      this._verificaDadosParaAddTarefa(dadosTarefa, reject);
 
       const query = `
         INSERT INTO tarefa (titulo, descricao, data_criacao, status, id_usuario)
@@ -99,7 +99,7 @@ class Tarefa {
    *   3. O status precisa ser um dos três: 0 para fazendo, 1 para feito, 2 para a fazer
    *   4. O id_usuario precisa existir na tabela usuario
    */
-  _verificaDados(dadosTarefa, reject) {
+  _verificaDadosParaAddTarefa(dadosTarefa, reject) {
     const erros = [];
 
     if (!dadosTarefa.titulo || dadosTarefa.titulo.length > 255) {
@@ -141,6 +141,9 @@ class Tarefa {
 
   atualizaTarefa(id, dadosTarefa) {
     return new Promise((resolve, reject) => {
+      // Verifica os dados passados na requisição.
+      this._verificaDadosParaAtualizarTarefa(dadosTarefa, reject);
+
       // Como não se sabe quais dados estão sendo atualizados,
       // é usada a função COALESCE() para pegar o primeiro valor não nulo.
       const query = `
@@ -151,7 +154,6 @@ class Tarefa {
           status = COALESCE(?, status)
         WHERE id_tarefa = ?;
       `;
-      // @TODO Verificar dados antes de salvar no banco de dados.
       const params = [
         dadosTarefa.titulo,
         dadosTarefa.descricao,
@@ -171,6 +173,32 @@ class Tarefa {
         });
       });
     });
+  }
+
+  /**
+   * Verifica os dados antes de atualizar tarefa:
+   *   1. Nenhum dos dados é obrigatório, pode ser que não venha algum campo
+   *   2. O titulo precisa ter no máximo 255 caracteres
+   *   3. O status precisa ser: 0 para fazendo, 1 feito ou 2 a fazer
+   */
+  _verificaDadosParaAtualizarTarefa(dadosTarefa, reject) {
+    const erros = [];
+
+    if (dadosTarefa.titulo && dadosTarefa.titulo > 255) {
+      erros.push('O titulo precisa ter no máximo 255 caracteres');
+    }
+
+    // 0 = fazendo, 1 = feito, 2 = a fazer
+    const statusValidos = [0, 1, 2];
+
+    if (typeof dadosTarefa.status !== 'undefined' && !statusValidos.includes(dadosTarefa.status)) {
+      erros.push('O status precisa ser igual a: 0, 1 ou 2, consulte a documentação');
+    }
+
+    if (erros.length) {
+      reject(erros.join('/'));
+      return;
+    }
   }
 
   deletaTarefa(id) {

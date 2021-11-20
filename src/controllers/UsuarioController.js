@@ -56,6 +56,24 @@ const UsuarioController = (app, db) => {
     }
   });
 
+  app.post('/api/usuario/login', async (req, res) => {
+    const body = { ...req.body };
+
+    try {
+      const usuarioLogado = await usuarioObj.logaUsuario(body);
+
+      res.json({
+        erro: false,
+        usuarioLogado: usuarioLogado,
+      });
+    } catch (err) {
+      res.json({
+        erro: true,
+        msg: err,
+      });
+    }
+  });
+
   app.patch('/api/usuario/:id', async (req, res) => {
     const id = parseInt(req.params.id);
     const body = { ...req.body };

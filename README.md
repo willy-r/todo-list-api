@@ -16,6 +16,7 @@ Rotas cadastradas para fazer requisições:
 | GET | /api/usuarios | Busca todos os usuários |
 | GET | /api/usuario/1 | Busca o usuário com o id=1 |
 | POST | /api/usuario | Adiciona um novo usuário |
+| POST | /api/usuario/login | Loga usuário |
 | PATCH | /api/usuario/1 | Atualiza alguns campos do usuário com o id=1 |
 | DELETE | /api/usuario/1 | Deleta o usuário com o id=1 |
 

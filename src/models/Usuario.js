@@ -100,6 +100,37 @@ class Usuario {
     }
   }
 
+  logaUsuario(dadosUsuario) {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT * FROM usuario
+        WHERE email = ?;
+      `;
+
+      this._db.get(query, dadosUsuario.email, (err, linha) => {
+        if (err) {
+          reject('Erro ao consultar banco de dados, tente novamente');
+          return;
+        }
+        
+        // Verifica se as senhas são iguais.
+        const senhaCadastrada = linha ? linha.senha : null;
+        const senhaInserida = md5(dadosUsuario.senha);
+
+        if (senhaCadastrada !== senhaInserida || !linha) {
+          reject('Email ou senha incorretos, tente novamente');
+          return;
+        }
+
+        resolve({
+          idUsuario: linha.id_usuario,
+          nome: linha.nome,
+          email: linha.email,
+        });
+      });
+    });
+  }
+
   atualizaUsuario(id, dadosUsuario) {
     return new Promise((resolve, reject) => {
       // Verifica os dados passados na requisição.

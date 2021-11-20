@@ -67,11 +67,7 @@ class Usuario {
           return;
         }
 
-        resolve({
-          nome: dadosUsuario.nome,
-          email: dadosUsuario.email,
-          idUsuario: this.lastID,
-        });
+        resolve({ idUsuario: this.lastID });
       });
     });
   }
@@ -86,18 +82,18 @@ class Usuario {
   _verificaDadosParaAddUsuario(dadosUsuario, reject) {
     const erros = [];
     
-    if (!dadosUsuario.nome || dadosUsuario.nome > 100) {
+    if (!dadosUsuario.nome || dadosUsuario.nome.length > 100) {
       erros.push('O nome é obrigatório e precisa ter no máximo 100 caracteres');
     }
 
-    if (!dadosUsuario.email || dadosUsuario.email > 100) {
+    if (!dadosUsuario.email || dadosUsuario.email.length > 100) {
       erros.push('O email é obrigatório e precisa ter no máximo 100 caracteres');
     }
 
-    if (!dadosUsuario.senha || !dadosUsuario.senha > 255) {
+    if (!dadosUsuario.senha || !dadosUsuario.senha.length > 255) {
       erros.push('A senha é obrigatória e precisa ter no máximo 255 caracteres');
     }
-
+    
     if (erros.length) {
       reject(erros.join('/'));
       return;

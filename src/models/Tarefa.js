@@ -184,7 +184,7 @@ class Tarefa {
   _verificaDadosParaAtualizarTarefa(dadosTarefa, reject) {
     const erros = [];
 
-    if (dadosTarefa.titulo && dadosTarefa.titulo > 255) {
+    if (dadosTarefa.titulo && dadosTarefa.titulo.length > 255) {
       erros.push('O titulo precisa ter no máximo 255 caracteres');
     }
 

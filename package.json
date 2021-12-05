@@ -2,10 +2,10 @@
   "name": "todo-list-api",
   "version": "1.0.0",
   "description": "TODO list API.",
-  "main": "src/app.js",
+  "main": "./src/server.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node ./src/server.js",
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "William Rodrigues",

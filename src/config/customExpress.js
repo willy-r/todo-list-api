@@ -6,9 +6,13 @@ const db = require('../infra/dbConexao');
 
 const customExpress = () => {
   const app = express();
+  const corsOptions = {
+    origin: [/localhost/], // Adicionar aqui origens permitidas.
+    methods: ['GET', 'PATCH', 'POST', 'DELETE'],
+  };
   
   // Middlewares.
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 

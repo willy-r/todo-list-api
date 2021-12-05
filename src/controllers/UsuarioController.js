@@ -60,11 +60,11 @@ const UsuarioController = (app, db) => {
     const body = { ...req.body };
 
     try {
-      const usuarioLogado = await usuarioObj.logaUsuario(body);
+      const infoUsuarioLogado = await usuarioObj.logaUsuario(body);
 
       res.json({
         erro: false,
-        usuarioLogado: usuarioLogado,
+        info: infoUsuarioLogado,
       });
     } catch (err) {
       res.json({

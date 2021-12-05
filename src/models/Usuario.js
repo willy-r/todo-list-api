@@ -122,11 +122,7 @@ class Usuario {
           return;
         }
 
-        resolve({
-          idUsuario: linha.id_usuario,
-          nome: linha.nome,
-          email: linha.email,
-        });
+        resolve({ idUsuario: linha.id_usuario });
       });
     });
   }

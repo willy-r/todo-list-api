@@ -3,11 +3,16 @@
 TODO List API com NodeJS e Express.
 
 
+## Informações gerais
+
+- Essa API usa a versão **14.18.1** do NodeJS
+- O banco de dados usado foi o SQLite
+- A API está hospedada no Heroku: [link](#todo)
+
+
 ## Rotas API
 
 Rotas cadastradas para fazer requisições:
-
-> Consulte a [wiki](#todo) para detalhes sobre as rotas.
 
 ### Rotas para Usuários
 

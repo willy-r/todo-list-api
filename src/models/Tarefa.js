@@ -67,15 +67,14 @@ class Tarefa {
       this._verificaDadosParaAddTarefa(dadosTarefa, reject);
 
       const query = `
-        INSERT INTO tarefa (titulo, descricao, data_criacao, status, id_usuario)
+        INSERT INTO tarefa (titulo, data_criacao, status, id_usuario)
         VALUES
-          (?, ?, ?, ?, ?)
+          (?, ?, ?, ?)
         ;
       `;
 
       const params = [
         dadosTarefa.titulo,
-        dadosTarefa.descricao,
         dayjs().format('YYYY-MM-DD HH:mm:ss'),
         dadosTarefa.status,
         dadosTarefa.id_usuario,
@@ -106,14 +105,14 @@ class Tarefa {
       erros.push('O título é obrigatório e precisa ter no máximo 255 caracteres');
     }
 
-    if (typeof dadosTarefa.status === 'undefined') {
+    if (dadosTarefa.status === undefined) {
       erros.push('O status é obrigatório');
     } else {
       // 0 = fazendo, 1 = feito, 2 = a fazer
       const statusValidos = [0, 1, 2];
 
       if (!statusValidos.includes(dadosTarefa.status)) {
-        erros.push('O status precisa ser igual a: 0, 1 ou 2, consulte a documentação');
+        erros.push('O status precisa ser igual a: 0, 1 ou 2');
       }
     }
 
@@ -150,13 +149,11 @@ class Tarefa {
         UPDATE tarefa
         SET
           titulo = COALESCE(?, titulo),
-          descricao = COALESCE(?, descricao),
           status = COALESCE(?, status)
         WHERE id_tarefa = ?;
       `;
       const params = [
         dadosTarefa.titulo,
-        dadosTarefa.descricao,
         dadosTarefa.status,
         id,
       ];
@@ -191,8 +188,8 @@ class Tarefa {
     // 0 = fazendo, 1 = feito, 2 = a fazer
     const statusValidos = [0, 1, 2];
 
-    if (typeof dadosTarefa.status !== 'undefined' && !statusValidos.includes(dadosTarefa.status)) {
-      erros.push('O status precisa ser igual a: 0, 1 ou 2, consulte a documentação');
+    if (dadosTarefa.status !== undefined && !statusValidos.includes(dadosTarefa.status)) {
+      erros.push('O status precisa ser igual a: 0, 1 ou 2');
     }
 
     if (erros.length) {

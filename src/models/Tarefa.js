@@ -80,13 +80,16 @@ class Tarefa {
         dadosTarefa.id_usuario,
       ];
 
-      this._db.run(query, params, (err) => {
+      this._db.run(query, params, function(err) {
         if (err) {
           reject('Erro ao adicionar tarefa no banco de dados');
           return;
         }
 
-        resolve(dadosTarefa);
+        resolve({
+          ...dadosTarefa,
+          id_tarefa: this.lastID,
+        });
       });
     });
   }
@@ -135,6 +138,7 @@ class Tarefa {
 
     if (erros.length) {
       reject(erros.join('/'));
+      return;
     }
   }
 

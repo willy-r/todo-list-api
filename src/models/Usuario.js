@@ -114,7 +114,7 @@ class Usuario {
         }
         
         // Verifica se as senhas são iguais.
-        const senhaCadastrada = linha ? linha.senha : null;
+        const senhaCadastrada = linha?.senha;
         const senhaInserida = md5(dadosUsuario.senha);
 
         if (senhaCadastrada !== senhaInserida || !linha) {
@@ -122,7 +122,10 @@ class Usuario {
           return;
         }
 
-        resolve({ idUsuario: linha.id_usuario });
+        resolve({ 
+          idUsuario: linha.id_usuario,
+          nome: linha.nome,
+        });
       });
     });
   }
